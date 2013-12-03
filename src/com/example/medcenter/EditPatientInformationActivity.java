@@ -1,5 +1,7 @@
 package com.example.medcenter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +21,50 @@ public class EditPatientInformationActivity extends Activity {
 	    setContentView(R.layout.activity_editpatientinfo);
 	    Intent intent = getIntent();
 	    setTitle("Edit Patient Information");
+	    
+	    
+	    String directoryPath = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS).toString()
+                + "/";
+            
+            String fileName = UserInformation.userName + ".txt";
+            
+            //Read existing user data from file.
+            String data;
+			try {
+				data = FileHandler.ReadFile(directoryPath + "medCenter/", fileName);
+				String[] patientInfo = UserInformation.parseInfo(data);
+				((EditText) findViewById(R.id.firstName)).setText(patientInfo[2]);
+				 ((EditText) findViewById(R.id.lastName)).setText(patientInfo[3]);
+				 ((EditText) findViewById(R.id.height)).setText(patientInfo[8]);
+				 
+				 String[] ageArray = patientInfo[6].split(":");
+				 String currentAge = ageArray[ageArray.length-1];
+				 currentAge = currentAge.replace("]","");
+				 String[] weightArray = patientInfo[7].split(":");
+				 String currentWeight = weightArray[weightArray.length-1];
+				 currentWeight = currentWeight.replace("]","");
+				 
+				 ((EditText) findViewById(R.id.age)).setText(currentAge);
+				 ((EditText) findViewById(R.id.weight)).setText(currentWeight);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
 	}
 	
 	public void confirmChange(View view)
 	{
 		// Retrieve the user input from the text fields.
 	    String firstName = ((EditText) findViewById(R.id.firstName)).getText().toString();
+	    
 	    String lastName = ((EditText) findViewById(R.id.lastName)).getText().toString();
 	    String newWeight = ((EditText) findViewById(R.id.weight)).getText().toString();
 	    String newAge = ((EditText) findViewById(R.id.age)).getText().toString();
@@ -56,6 +96,10 @@ public class EditPatientInformationActivity extends Activity {
 	 		    String hasHernia =  patientInfo[12];
 	 		    String hasBloodInUrine = patientInfo[13];
 	 		    String hasDiabetes =  patientInfo[14];
+	 		    
+	 		    //
+	 		  
+	 		    
 	 		    
 	 		    //Retrieve individual prescriptions.
 	 		    String prescriptionString =  patientInfo[15];	 		    
